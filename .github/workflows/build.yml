@@ -60,7 +60,7 @@ jobs:
 
       # Full emacs
       - name: Pack full emacs
-        run: .\emacs-build.cmd -nativecomp --slim --with-cairo --no-compress --with-rsvg --pdf-tools --hunspell --pack-all
+        run: .\emacs-build.cmd --nativecomp --slim --with-cairo --no-compress --with-rsvg --pdf-tools --hunspell --pack-all
 
       - name: See free space
         run: Get-PSDrive

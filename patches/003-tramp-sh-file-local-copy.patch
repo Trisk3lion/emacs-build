@@ -1,0 +1,50 @@
+From: Michael Albinus <michael.albinus@gmx.de>
+Subject: Re: Regression in tramp-sh-handle-file-local-copy
+To: Kristofer <kristofer.hjelmtorp@mailbox.org>
+Cc: tramp-devel@gnu.org
+Date: Wed, 17 Aug 2022 20:39:08 +0200 (59 minutes, 50 seconds ago)
+
+---
+
+diff --git a/lisp/tramp-sh.el b/lisp/tramp-sh.el
+index 4a9cf2e6..3e34b696 100644
+--- a/lisp/tramp-sh.el
++++ b/lisp/tramp-sh.el
+@@ -3269,13 +3269,12 @@ implementation will be used."
+ (defun tramp-sh-handle-file-local-copy (filename)
+   "Like `file-local-copy' for Tramp files."
+   (tramp-skeleton-file-local-copy filename
+-    (if-let ((size (file-attribute-size (file-attributes filename)))
+-	     (rem-enc (tramp-get-inline-coding v "remote-encoding" size))
+-	     (loc-dec (tramp-get-inline-coding v "local-decoding" size)))
++    (if-let ((size (file-attribute-size (file-attributes filename))))
++	(let (rem-enc loc-dec)
+
+       (condition-case err
+ 	  (cond
+-	   ;; Empty file.
++	   ;; Empty file.  Nothing to copy.
+ 	   ((zerop size))
+
+ 	   ;; `copy-file' handles direct copy and out-of-band methods.
+@@ -3284,7 +3283,8 @@ implementation will be used."
+ 	    (copy-file filename tmpfile 'ok-if-already-exists 'keep-time))
+
+ 	   ;; Use inline encoding for file transfer.
+-	   (rem-enc
++	   ((and (setq rem-enc (tramp-get-inline-coding v "remote-encoding" size))
++		 (setq loc-dec (tramp-get-inline-coding v "local-decoding" size)))
+ 	    (with-tramp-progress-reporter
+ 		v 3
+ 		(format-message
+@@ -3343,7 +3343,7 @@ implementation will be used."
+ 	;; Error handling.
+ 	((error quit)
+ 	 (delete-file tmpfile)
+-	 (signal (car err) (cdr err))))
++	 (signal (car err) (cdr err)))))
+
+       ;; Impossible to copy.  Trigger `file-missing' error.
+       (setq tmpfile nil))))
+       
+--

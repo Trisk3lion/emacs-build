@@ -140,6 +140,10 @@ function emacs_configure_build_dir ()
     options="--disable-build-details --without-dbus"
     if test "$emacs_compress_files" = "no"; then
         options="$options --without-compress-install"
+    else
+        options="$options --with-compress-install"
+    fi
+
     fi
     for f in $all_features; do
         if echo $features | grep $f > /dev/null; then
@@ -205,7 +209,7 @@ function action2_install ()
         echo refusing to reinstall
     else
         rm -rf "$emacs_install_dir"
-        mkdir -p "$emacs_install_dir"
+        mkdir -p "$emacs_install_dir/bin"
         if test "$emacs_compress_files" = "yes"; then
             # If we compress files we need to install gzip no matter what
             # (even in pack-emacs)
@@ -280,7 +284,7 @@ function action5_package_all ()
         fi
     done
     rm -rf "$emacs_full_install_dir"
-    if cp -rf "$emacs_install_dir" "$emacs_full_install_dir"; then
+    if cp -rfp "$emacs_install_dir" "$emacs_full_install_dir"; then
         rm -f "$emacs_distfile"
         cd "$emacs_full_install_dir"
         for zipfile in "$emacs_depsfile" $emacs_extensions; do

@@ -144,7 +144,6 @@ function emacs_configure_build_dir ()
         options="$options --with-compress-install"
     fi
 
-    fi
     for f in $all_features; do
         if echo $features | grep $f > /dev/null; then
             options="--with-$f $options"

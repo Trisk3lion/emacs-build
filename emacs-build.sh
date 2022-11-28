@@ -151,6 +151,10 @@ function emacs_configure_build_dir ()
             options="--without-$f $options"
         fi
     done
+    
+    # Small Japanese dictionary
+    options="$options --with-small-ja-dic"
+
     echo Configuring Emacs with options
     echo   "$emacs_source_dir/configure" "--prefix=$emacs_install_dir" CFLAGS="$CFLAGS" $options
     if "$emacs_source_dir/configure" "--prefix=$emacs_install_dir" CFLAGS="$CFLAGS" $options; then

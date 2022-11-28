@@ -318,6 +318,7 @@ xml2 mingw-libxml2
 gnutls mingw-gnutls
 zlib mingw-zlib
 sqlite3 mingw-sqlite3
+tree-sitter mingw-tree-sitter
 EOF
     if test "$emacs_nativecomp" = yes; then
         echo native-compilation mingw-libgccjit
